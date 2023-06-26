@@ -2,7 +2,39 @@ import { createContext, useState, useEffect } from "react";
 
 const ShoppingCartContext = createContext();
 
+//localstorage for signout
+const initialStorage =() =>{
+  const accountInLocalStorage =localStorage.getItem('account');
+  const signOutInLocalStorage =  localStorage.getItem('sign-out');
+  let parsedAccount
+  let parsedSignOut
+
+  if(!accountInLocalStorage){
+    localStorage.setItem('account', JSON.stringify({}))
+    parsedAccount = {}
+  }else{
+    parsedAccount = JSON.parse(accountInLocalStorage)
+  }
+
+  if(!signOutInLocalStorage){
+    localStorage.setItem('sign-out', JSON.stringify(false))
+    parsedSignOut = false
+  } else {
+    parsedSignOut = JSON.parse(signOutInLocalStorage)
+  }
+
+  
+}
+
+//en el shopping car vienen los estados globales
 const ShoppingCartProvider = ({ children }) => {
+  
+  //MyAccount
+  const [account, setAccount] = useState({})
+
+  //Sign-out
+  const [signOut, setSignOut] = useState(false)
+  
   //shopping cart increment
   const [count, setCount] = useState(0);
 
@@ -64,7 +96,9 @@ const ShoppingCartProvider = ({ children }) => {
     if (!searchByTitle && !searchByCategory) setFilteredItems(filteredBy(null, items, searchByTitle, searchByCategory))
   }, [items, searchByTitle, searchByCategory])
 
+  //sign out en el localsotarage
   
+
 
   return (
     <ShoppingCartContext.Provider
@@ -91,11 +125,15 @@ const ShoppingCartProvider = ({ children }) => {
         filteredItems,
         setFilteredItems,
         searchByCategory,
-        setSearchByCategory
+        setSearchByCategory,
+        account,
+        setAccount,
+        signOut,
+        setSignOut
       }}
     >
       {children}
     </ShoppingCartContext.Provider>
   );
 };
-export { ShoppingCartContext, ShoppingCartProvider };
+export { ShoppingCartContext, ShoppingCartProvider, initialStorage };

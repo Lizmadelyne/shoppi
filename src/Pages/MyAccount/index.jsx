@@ -1,33 +1,100 @@
-
+import { useContext,useState, useRef } from 'react';
+import { ShoppingCartContext } from '../../Context';
+import  Layout  from '../../Components/Layout'
 
 function    MyAccount(){
-    return(
-        <div className="">
-           <h1 className="text-center text-lg font-bold mt-20 mb-3 text-black">Form Register</h1>
-         < form>
-  <div className="flex items-center  justify-center h-full bg-white">
-    <div className="bg-white py-6 border-l-slate-600 rounded-md px-10 max-w-lg shadow-md">
-     
-      <div className="space-y-4 mt-6">
-        <div className="w-full border-dotted border-l-slate-500">
-          <input type="text" placeholder="fullname" className="px-4 py-2 bg-gray-50 " />
-        </div>
-        <div className="w-full">
-          <input type="text" placeholder="username" className="px-4 py-2 bg-gray-50" />
-        </div>
-        <div className="w-full">
-          <input type="text" placeholder="email" className="px-4 py-2 bg-gray-50" />
-        </div>
-        <div className="w-full">
-          <input type="text" placeholder="password" className="px-4 py-2 bg-gray-50" />
-        </div>
-      </div>
-      <button className="w-full mt-5 bg-black  hover:bg-slate-400 text-white py-2 rounded-md font-semibold tracking-tight">Register</button>
-    </div>
-  </div>
-</form>
+  const context = useContext(ShoppingCartContext);
+  const [view, setView] = useState('user-info')
+  const account = localStorage.getItem('account');
+  const parsedAccount = JSON.parse(account);
+  const form = useRef(null)
 
-        </div>
+  const editAccount = () =>{
+    const formData = new FormData(form.current)
+    const data = {
+     name: formData.get('name'),
+     email: formData.get('email'),
+     password: formData.get('password')
+    }
+     //update acount
+     const updateAccount = JSON.stringify(data)
+     localStorage.setItem('account', updateAccount)
+     context.setAccount(data)
+   
+  }
+  const renderUserInfo =()=>{
+    return (
+      <div className='flex flex-col w-80'>
+        <p>
+          <span className='font-medium text-sm p-4'>Name: </span>
+          <span>{parsedAccount?.name}</span>
+        </p>
+        <p>
+          <span className='font-medium text-sm p-4'>Email: </span>
+          <span>{parsedAccount?.email}</span>
+        </p>
+        <button
+          className='border border-none rounded-lg mt-6 py-3 text-white font-medium bg-black hover:bg-slate-400'
+          onClick={() => setView('edit-user-info')}>
+          Edit
+        </button>
+      </div>
     )
+
+  }
+  const renderEditUserInfo =()=>{
+    return (
+      <form ref={form} className='flex flex-col gap-4 w-80'>
+        <div className='flex flex-col gap-1'>
+          <label htmlFor="name" className='font-medium text-sm'>Your name:</label>
+          <input
+            type="text"
+            id="name"
+            name="name"
+            defaultValue={parsedAccount.name}
+            placeholder="Peter"
+            className='rounded-lg border border-black placeholder:font-light placeholder:text-sm placeholder:text-black/60 focus:outline-none py-2 px-4'
+          />
+        </div>
+        <div className='flex flex-col gap-1'>
+          <label htmlFor="email" className='font-medium text-sm'>Your email:</label>
+          <input
+            type="text"
+            id="email"
+            name="email"
+            defaultValue={parsedAccount.email}
+            placeholder="hi@helloworld.com"
+            className='rounded-lg border border-black placeholder:font-light placeholder:text-sm placeholder:text-black/60 focus:outline-none py-2 px-4'
+          />
+        </div>
+        <div className='flex flex-col gap-1'>
+          <label htmlFor="password" className='font-medium text-sm'>Your password:</label>
+          <input
+            type="text"
+            id="password"
+            name="password"
+            defaultValue={parsedAccount.password}
+            placeholder="******"
+            className='rounded-lg border border-black placeholder:font-light placeholder:text-sm placeholder:text-black/60 focus:outline-none py-2 px-4'
+          />
+        </div>
+        <button
+          className='bg-black text-white w-full rounded-lg py-3'
+          onClick={() => {setView('user-info'), editAccount()}}>
+          Edit
+        </button>
+      </form>
+    )
+
+  }
+
+  const renderView = () => view === 'edit-user-info' ? renderEditUserInfo() : renderUserInfo()
+   return(
+    <Layout>
+       <h1 className="font-medium text-lg text-center mb-6 w-80">My Account</h1>
+      {renderView()}
+    </Layout>
+
+   )
 }
-export default MyAccount  ;
+export default MyAccount;

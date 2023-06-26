@@ -15,7 +15,7 @@ function MyOrders() {
         <h1 className="font-medium text-xl ">My Orders</h1>
       </div>
       {context.order.map((order, index) => (
-        <Link key={index} to={`/my-orders/${index}`}>
+        <Link key={index} to={`/my-order/${index}`}>
           <OrdersCheckout
             totalPrice={order.totalPrice}
             totalProducts={order.totalProducts}

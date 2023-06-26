@@ -30,7 +30,7 @@ function Home() {
      <input 
      type="text"
      placeholder='Search a Product'
-     className='rounded-lg border-black w-80 p-4 mb-4  ' 
+     className='rounded-lg bg-slate-300 border-black  text-sm outline-none w-80 p-4 mb-4' 
      onChange={(event) => context.setSearchByTitle (event.target.value)}
      />
      <div className='grid gap-4 grid-cols-4 w-full max-w-screen-lg relative'>
